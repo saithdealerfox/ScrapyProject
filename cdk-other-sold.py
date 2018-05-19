@@ -26,7 +26,7 @@ start_date = '1'
 end_month = 'Apr'
 end_date = '30'
 
-################################################################
+###################################################################################################
 sleep(1)
 try:
     browser.find_element_by_xpath("//button[@class='walkme-custom-balloon-button walkme-custom-balloon-normal-button walkme-custom-balloon-ok-button walkme-action-ok walkme-click-and-hover']").click()
@@ -40,8 +40,44 @@ except:
 sleep(3)
 WebDriverWait(browser,10).until(EC.element_to_be_clickable((By.ID,"menu-item-desk-log")))
 browser.find_element_by_id('menu-item-desk-log').click()
-#************************* -------- Date Filter Logic ----------**********************************#
+sleep(1)
+filter = browser.find_element_by_xpath("//button[@uib-tooltip= 'Filter']")
+filter.click()
+sleep(3)
+browser.execute_script("var a = document.getElementsByClassName('select-all ng-scope'); a[3].click(); a[3].click();")
+sleep(2)
+browser.execute_script("var a = document.getElementsByClassName('select-all ng-scope'); a[4].click(); a[4].click();")
+sleep(2)
+browser.execute_script("var a = document.getElementsByClassName('select-all ng-scope'); a[4].click(); a[4].click();")
+sleep(2)
+fields = browser.find_elements_by_xpath("//span[text()='Select']")
+fields[-4].click()
+select_sold_date = browser.find_element_by_xpath("//span[text() = 'Sold Date']")
+select_sold_date.click()
+browser.find_element_by_xpath("//div[@class='btn-group crm-mobile-dropdown dropdown open']").click()
+sleep(1)
+fields[-3].click()
+f_i = browser.find_element_by_xpath("//span[text() = 'F&I']")
+f_i.click()
+show_room = browser.find_element_by_xpath("//span[text() = 'Showroom']")
+show_room.click()
+inbound_phone_call = browser.find_element_by_xpath("//span[text() = 'Inbound Phone Call']")
+inbound_phone_call.click()
+outbound_phone_call = browser.find_element_by_xpath("//span[text() = 'Outbound Phone Call']")
+outbound_phone_call.click()
+browser.find_element_by_xpath("//div[@class='btn-group crm-mobile-dropdown dropdown open']").click()
+sleep(1)
+fields[-2].click()
+status_delivered = browser.find_element_by_xpath("//span[text()='Delivered']")
+status_delivered.click()
+status_sold = browser.find_element_by_xpath("//span[text()='Sold']")
+status_sold.click()
+browser.find_element_by_xpath("//div[@class='btn-group crm-mobile-dropdown dropdown open']").click()
+sleep(1)
+apply = browser.find_element_by_xpath("//button[text()='Apply']")
+apply.click()
 
+#************************* -------- Date Filter Logic ----------**********************************#
 sleep(2)
 span_click = browser.find_element_by_xpath("//span[@class='input-group-addon']")
 span_click.click()
@@ -65,35 +101,18 @@ num_customers = int(num_customers)
 customers = browser.find_elements_by_xpath("//div[@class='lead-row ng-scope']")
 unique_customers = []
 sleep(1)
-
+print(num_customers)
 # for i in range(0,num_customers):
 #     if (i+1)%50 == 0:
 #         sleep(4)
 #         print(i)
 #         browser.execute_script(" var a = document.getElementsByClassName('lead-row ng-scope'); a[{}].scrollIntoView();".format(i))
-for i in range(0, 3):
-    if (i+1)%50 == 0:
-        sleep(3)
-    browser.execute_script(" var a = document.getElementsByClassName('lead-row ng-scope'); a[{}].scrollIntoView();".format(i))
-    WebDriverWait(browser,10).until(EC.presence_of_all_elements_located((By.XPATH,"//div[@class='lead-customer-name hidden-xs ng-binding']")))
-    customer = browser.find_elements_by_xpath("//div[@class='lead-customer-name hidden-xs ng-binding']")
-    customer_name = customer[i].text
-    print(customer_name)
-    sleep(2)
-    # if customer_name in unique_customers:
-    #     continue
-    unique_customers.append(customer_name)
-    browser.execute_script("var a = document.getElementsByClassName('lead-customer-name hidden-xs ng-binding'); a[{}].click(); ".format(i))
-    sleep(5)
-    source_click = browser.find_element_by_xpath("//span[text()='View Source']")
-    source_click.click()
-    sleep(4)
-    xml_text = browser.execute_script("var a = document.getElementsByTagName('textarea'); return a[0].value;")
-    WebDriverWait(browser,10).until(EC.element_to_be_clickable((By.XPATH,"//i[text()='close']")))
-    close_button = browser.find_element_by_xpath("//i[text()='close']")
-    close_button.click()
 
-
-
-
-
+for i in range(0,48):
+    sleep(1)
+    date_input = browser.execute_script("var a = document.getElementsByClassName('lead-row ng-scope'); b = a[{}].getElementsByClassName('lead-col lead-col-status hidden-xs ng-binding'); return b[1].innerText;".format(i))
+    source_detail = browser.execute_script("var a = document.getElementsByClassName('lead-row ng-scope'); b = a[{}].getElementsByClassName('lead-col lead-col-source hidden-sm hidden-xs ng-binding'); return b[0].innerText;".format(i))
+    source_detail = source_detail.strip('')
+    if 'Phone Call' in source_detail:
+        source_detail = 'Phone'
+    print(date_input , source_detail)
